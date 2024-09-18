@@ -24,7 +24,7 @@ The Chinook database represents a digital media store, including tables for arti
 
 ### Database Diagram
 The Chinook database has 11 tables in it. This visualization highlights where the tables are related. 
-![chinook diagram](https://github.com/clintprentice/SQL-portfolio/SQL-Chinook-Data-Project/blob/main/chinook%20diagram.png)
+![chinook diagram]([https://github.com/clintprentice/SQL-portfolio/SQL-Chinook-Data-Project/blob/main/chinook%20diagram.png](https://github.com/clintprentice/portfolio/blob/main/SQL%20Portfolio/SQL%20Chinook%20Data%20Project/chinook%20diagram.png))
 
 ### Area of Skills
 
