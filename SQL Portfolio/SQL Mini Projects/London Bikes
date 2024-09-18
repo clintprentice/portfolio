@@ -1,0 +1,40 @@
+/* Google Analytics Course BigQuery
+Using dataset found in BigQuery Public Data on London Bicycles https://console.cloud.google.com/bigquery?ws=!1m4!1m3!3m2!1sbigquery-public-data!2slondon_bicycles */
+
+/* Question 1: What is the name of the station whose start_station_id is 111? */
+
+SELECT
+  start_station_name, start_station_id
+FROM
+  `bigquery-public-data.london_bicycles.cycle_hire`
+WHERE
+  start_station_id = 111
+LIMIT
+  1;
+
+/* I was getting too many returns and the query was taking too long so I added LIMIT 1 to only return the value relating to the Station ID since they would all be the same.
+The answer here was Park Lane, Hyde Park */
+
+/* Question 2: Return all the rental_ids, station IDs, and station names that bike_id 1710 started from */
+
+SELECT
+  bike_id, rental_id, start_station_id, start_station_name
+FROM
+  `bigquery-public-data.london_bicycles.cycle_hire`
+WHERE
+  bike_id = 1710
+ORDER BY start_station_id ASC;
+
+/* I wanted to clean my data so I added the ORDER BY function as a sort. I also included bike_id in my SELECT to ensure I was getting the most accurate dataset. */
+
+/* Question 3: What is the bike_model of bike_id 58782? */
+
+SELECT
+  bike_id, bike_model
+FROM
+  `bigquery-public-data.london_bicycles.cycle_hire`
+WHERE
+  bike_id = 58782
+LIMIT 1;
+
+/* LIMIT so that I would only get the one value rather than every bike_id value in the set. The bike_model is "CLASSIC" */
