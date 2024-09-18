@@ -1,4 +1,4 @@
-*/ This analysis utilized the following Fortune 500 dataset: /*
+/* This analysis utilized the following Fortune 500 dataset: */
 
 CREATE TABLE fortune_companies (
     company_id INTEGER PRIMARY KEY,
@@ -58,11 +58,11 @@ VALUES
     ('Company JJ', 'Manufacturing', 370.0, 3100, 1, 20, 12, 7.6),
     ('Company KK', 'Healthcare', 150.2, 3400, 0, 16, 8, 5.3);
 
--- Analysis: 
+/* Analysis: 
 
--- Which companies in the Retail industry have great employee tenure?
+Which companies in the Retail industry have great employee tenure? */
 SELECT
-company_name, avg_employee_tenure,
+	company_name, avg_employee_tenure,
 CASE 
 	WHEN avg_employee_tenure>=6 THEN 'Great'
 	WHEN avg_employee_tenure>=5 THEN 'Good'
@@ -73,29 +73,38 @@ FROM fortune_companies
 WHERE industry='Retail'
 ORDER BY avg_employee_tenure desc;
 
--- Which industries have an average revenue of $230 Billion and what are those revenues?
-SELECT industry, ROUND(AVG(revenue),1) as avg_revenue_billions
+/* Which industries have an average revenue of $230 Billion and what are those revenues? */
+SELECT 
+	industry, 
+	ROUND(AVG(revenue),1) as avg_revenue_billions
 FROM fortune_companies
 GROUP BY industry
 HAVING avg_revenue_billions>=230
 ORDER BY avg_revenue_billions desc;
 
--- Which companies have health care benefits and at least 18 days off?
-SELECT company_name, paid_time_off_days
+/* Which companies have health care benefits and at least 18 days off? */
+SELECT 
+	company_name, 
+	paid_time_off_days
 FROM fortune_companies
 WHERE healthcare_benefits = 1
-AND paid_time_off_days>=18
+	AND paid_time_off_days>=18
 ORDER BY paid_time_off_days desc;
 
--- Which industries have an average revenue of $200 Billion and less than 5000 employees
-SELECT company_name, employees, ROUND(AVG(revenue),1) as avg_revenue_billions
+/* Which industries have an average revenue of $200 Billion and less than 5000 employees */
+SELECT 
+	company_name, 
+	employees, 
+	ROUND(AVG(revenue),1) as avg_revenue_billions
 FROM fortune_companies
 GROUP BY company_name
 HAVING avg_revenue_billions>=200
-AND employees<=5000
+	AND employees<=5000
 ORDER BY avg_revenue_billions desc;
 
--- Which company in technology has the most maternity leave?
-SELECT company_name, max(maternity_leave_weeks)
+/* Which company in technology has the most maternity leave? */
+SELECT 
+	company_name, 
+	max(maternity_leave_weeks)
 FROM fortune_companies
 WHERE industry="Technology"
