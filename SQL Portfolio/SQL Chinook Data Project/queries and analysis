@@ -1,0 +1,180 @@
+/* Show Customers (their full names, customer ID, and country) who are not in the US.
+
+SELECT FirstName,
+       LastName,
+       CustomerId,
+       Country
+  FROM customers
+ WHERE Country != 'USA';
+;
+
+/* Show only the Customers from Brazil
+
+SELECT *
+  FROM customers
+ WHERE Country = 'Brazil';
+
+/* Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country
+
+SELECT FirstName,
+       LastName,
+       InvoiceId,
+       InvoiceDate,
+       BillingCountry
+  FROM invoices
+       JOIN
+       customers ON invoices.CustomerId = customers.CustomerId
+ WHERE customers.Country = 'Brazil';
+
+/* Show the Employees who are Sales Agents
+
+SELECT *
+  FROM employees
+ WHERE Title LIKE '%Sales%';
+
+/* Find a unique/distinct list of billing countries from the Invoice Table
+
+SELECT DISTINCT BillingCountry
+  FROM invoices;
+
+/* Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.
+
+SELECT e.FirstName || ' ' || e.LastName AS SalesAgentFullName,
+       i.InvoiceId,
+       i.InvoiceDate,
+       i.Total
+  FROM Invoices i
+       JOIN
+       Customers c ON i.CustomerId = c.CustomerId
+       JOIN
+       Employees e ON c.SupportRepId = e.EmployeeId
+ ORDER BY SalesAgentFullName,
+          i.InvoiceDate;
+
+    
+/* Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+
+SELECT i.Total AS InvoiceTotal,
+       c.FirstName || ' ' || c.LastName AS CustomerName,
+       c.Country,
+       e.FirstName || ' ' || e.LastName AS SalesAgentName
+  FROM invoices i
+       JOIN
+       customers c ON i.CustomerId = c.CustomerId
+       JOIN
+       employees e ON c.SupportRepId = e.EmployeeId
+ ORDER BY i.InvoiceId;
+
+/* How many Invoices were there in 2009?
+
+SELECT COUNT( * ) AS InvoiceCount
+  FROM invoices
+ WHERE InvoiceDate LIKE '2009%';
+
+    
+/* What are the total sales for 2009?
+
+SELECT SUM(Total) AS TotalSales
+  FROM invoices
+ WHERE InvoiceDate LIKE '2009%';
+
+/* Write a query that includes the purchased track name with each invoice line ID.
+
+SELECT i.invoicelineid,
+       t.Name
+  FROM invoice_items i
+       JOIN
+       tracks t ON t.trackid = i.trackid
+ ORDER BY i.invoicelineid ASC;
+
+/* Write a query that includes the purchased track name AND artist name with each invoice line ID.
+
+SELECT i.invoicelineid,
+       t.Name,
+       a.Name
+  FROM invoice_items i
+       JOIN
+       tracks t ON t.trackid = i.trackid
+       JOIN
+       albums al ON al.AlbumID = t.AlbumID
+       JOIN
+       artists a ON a.ArtistID = al.ArtistID
+ ORDER BY i.invoicelineid ASC;
+
+/* Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+
+SELECT t.Name 'Track Name',
+       al.Title 'Album Name',
+       a.Name 'Artist',
+       g.name 'Genre',
+       m.Name 'Media Type'
+  FROM tracks t
+       JOIN
+       albums al ON al.AlbumID = t.AlbumID
+       JOIN
+       media_types m ON m.MediaTypeId = t.MediaTypeId
+       JOIN
+       genres g ON g.GenreId = t.GenreID
+       JOIN
+       artists a ON a.ArtistId = al.ArtistId;
+       
+/* Show the total sales made by each sales agent.
+
+SELECT ROUND(SUM(i.Total), 2) AS RoundedTotal,
+       e.FirstName || ' ' || e.LastName AS SalesAgentName
+  FROM invoices i
+       JOIN
+       customers c ON c.CustomerId = i.CustomerId
+       JOIN
+       employees e ON e.EmployeeId = c.SupportRepId
+ GROUP BY SalesAgentName;
+
+/* Which sales agent made the most dollars in sales in 2009?
+
+SELECT e.FirstName || ' ' || e.LastName AS SalesAgentName,
+       ROUND(SUM(i.Total), 2) AS RoundedTotal
+  FROM invoices i
+       JOIN
+       customers c ON c.customerId = i.CustomerId
+       JOIN
+       employees e ON e.EmployeeId = c.SupportRepId
+ WHERE i.InvoiceDate LIKE '%2009%';
+
+/* How many years since the employee Hire Date did each employee make their first sale?
+
+WITH YearDifference AS (
+    SELECT e.FirstName || ' ' || e.LastName AS SalesAgentName,
+           SUM(Quantity),
+           HireDate,
+           InvoiceDate,
+           (InvoiceDate - HireDate) AS YearsSinceSale
+      FROM employees e
+           JOIN
+           customers c ON c.SupportRepId = e.EmployeeId
+           JOIN
+           invoices i ON i.CustomerId = c.CustomerId
+           JOIN
+           invoice_items ii ON ii.InvoiceId = i.InvoiceId
+     GROUP BY YearsSinceSale,
+              SalesAgentName
+     ORDER BY SalesAgentName,
+              YearsSinceSale
+)
+SELECT SalesAgentName,
+       MIN(YearsSinceSale) AS YearsSinceFirstSale
+  FROM YearDifference
+ GROUP BY SalesAgentName
+ ORDER BY YearsSinceFirstSale;
+
+--## What is the most ordered Track Title/Artist/Album?
+SELECT COUNT (ii.TrackId) as TimesOrdered,
+       t.Name ['Track'],
+       al.Title ['Album'],
+       a.Name ['Artist']
+  FROM invoice_items ii
+       JOIN
+       tracks t ON t.TrackId = ii.TrackId
+       JOIN
+       albums al ON al.AlbumId = t.AlbumId
+       JOIN
+       artists a ON a.ArtistID = al.ArtistID;
