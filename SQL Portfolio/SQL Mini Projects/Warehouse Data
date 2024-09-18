@@ -1,0 +1,27 @@
+/*
+OBJECTIVE: aggregate the data into a table containing each warehouse's ID, state and alias, and  number of orders; as well as the grand total of orders for all warehouses combined; and finally a column that classifies each warehouse by the percentage of grand total orders that it fulfilled: 0–20%, 21-60%, or > 60%.
+*/
+
+SELECT
+  warehouse.warehouse_id,
+  CONCAT(warehouse.state, ': ', warehouse.warehouse_alias) AS warehouse_name,
+  COUNT(orders.order_id) AS number_of_orders,
+  (SELECT COUNT(*) FROM warehouse_orders.orders AS Orders) AS total_orders,
+  CASE
+    WHEN COUNT(orders.order_id)/(SELECT COUNT(*) FROM warehouse_orders.orders AS Orders) <= 0.20
+      THEN 'Fulfilled 0-20% of Orders'
+    WHEN COUNT(orders.order_id)/(SELECT COUNT(*) FROM warehouse_orders.orders AS Orders) > 0.20
+      AND COUNT(orders.order_id)/(SELECT COUNT(*) FROM warehouse_orders.orders AS Orders) <= 0.60
+      THEN 'Fulfilled 21-60% of Orders'
+    ELSE 'Fulfilled more than 60% of Orders' 
+  END AS fulfillment_summary
+FROM 
+  warehouse_orders.warehouse AS warehouse
+LEFT JOIN
+  warehouse_orders.orders AS orders
+  ON orders.warehouse_id = warehouse.warehouse_id
+GROUP BY
+  warehouse.warehouse_id,
+  warehouse_name
+HAVING
+  COUNT(orders.order_id) > 0
