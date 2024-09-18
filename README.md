@@ -7,5 +7,6 @@ I have 9 years of Operations Management experience that has dealt with many data
 This is broken down by projects in different languages.
 ### Languages included:
   * SQL
+  * Tableau
   * R (coming soon)
   * Python (eventually)
