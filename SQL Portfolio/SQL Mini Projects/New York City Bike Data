@@ -1,0 +1,147 @@
+/*
+Using BigQuery and BigQuery public data for New York Citibikes.
+*/
+ 
+/*
+Write a query that returns a table containing two columns: the station_id and name(from the citibike_stations table) of only those stations that were used by people classified as subscribers, which is information found in the citibike_trips table
+*/
+SELECT
+station_id,
+	name
+FROM
+	bigquery-public-data.new_york.citibike_stations
+WHERE
+	station_id IN
+	(
+		SELECT
+			CAST(start_station_id AS STRING) AS start_station_id_str #**
+		FROM
+	    	bigquery-public-data.new_york.citibike_trips
+	  	WHERE
+			usertype = 'Subscriber'
+  	);
+
+/*
+Use the citibike_trips table to calculate the total number of rides that started at each station 
+and return this as a column called number_of_rides_starting_at_station along with the columns 
+station_id and name from the citibikes_stations table.
+*/
+SELECT 
+	station_id,
+	name,
+	number_of_rides AS number_of_rides_starting_at_station
+FROM
+	(
+		SELECT
+			CAST(start_station_id AS STRING) AS start_station_id_str,
+			COUNT(*) AS number_of_rides
+		FROM 
+      		bigquery-public-data.new_york.citibike_trips
+		GROUP BY 
+			CAST(start_station_id AS STRING)
+	)
+	AS station_num_trips
+	INNER JOIN 
+		bigquery-public-data.new_york.citibike_stations 
+	ON 
+		station_id = start_station_id_str
+	ORDER BY 
+		number_of_rides DESC;
+
+/*
+Compare the number of bikes available at a particular station to the overall 
+average number of bikes available at all stations
+*/
+SELECT
+	station_id,
+	num_bikes_available,
+	(SELECT
+		AVG(num_bikes_available)
+	FROM bigquery-public-data.new_york.citibike_stations) AS avg_num_bikes_available
+FROM bigquery-public-data.new_york.citibike_stations;
+
+/* Compare the average trip duration per station to the overall average trip duration
+from all stations. This will provide insights about how long people typically use the bikes that they get
+from a particular station in comparison to the overall average.*/
+
+SELECT
+  starttime,
+  start_station_id,
+  tripduration,
+  (
+      SELECT
+        ROUND(AVG(tripduration),2)
+      FROM
+        bigquery-public-data.new_york_citibike.citibike_trips
+      WHERE
+        start_station_id = outer_trips.start_station_id ) AS avg_duration_for_station,
+  ROUND(tripduration - (
+      SELECT
+        AVG(tripduration)
+      FROM
+        bigquery-public-data.new_york_citibike.citibike_trips
+      WHERE
+        start_station_id = outer_trips.start_station_id), 2) AS difference_from_avg
+FROM
+  bigquery-public-data.new_york_citibike.citibike_trips AS outer_trips
+ORDER BY
+  difference_from_avg DESC
+LIMIT
+  25; 
+
+/*
+Compose a new query to filter the data to include only the trips from the five stations with the 
+longest mean trip duration
+*/
+SELECT
+    tripduration,
+    start_station_id
+FROM bigquery-public-data.new_york_citibike.citibike_trips
+WHERE start_station_id IN
+    (
+      SELECT
+        start_station_id
+      FROM
+        (
+          SELECT
+            start_station_id,
+            AVG(tripduration) AS avg_duration
+          FROM bigquery-public-data.new_york_citibike.citibike_trips
+          GROUP BY start_station_id
+        ) AS top_five
+        ORDER BY avg_duration DESC
+        LIMIT 5
+    );
+
+/*
+Find how many rides people took on these bikes per year.
+Note: starttime is listed as full date and time in Hours:Minutes:Seconds:Miliseconds.
+Only wanting the year means using the EXTRACT function.
+*/
+
+SELECT
+  EXTRACT(YEAR FROM starttime) AS year,
+  COUNT(*) AS number_of_rides
+FROM
+  bigquery-public-data.new_york_citibike.citibike_trips
+GROUP BY
+  year
+ORDER BY
+  year DESC;
+
+/*
+Using Temporary Tables, find out how many trips were over 1 hour.
+*/
+
+WITH trips_over_1_hr AS(
+  SELECT *
+  FROM bigquery-public-data.new_york_citibike.citibike_trips
+  WHERE tripduration >= 3600
+)
+
+## Count how many trips are 60+ minutes long
+
+SELECT
+  COUNT(*) AS cnt
+FROM
+  trips_over_1_hr;
