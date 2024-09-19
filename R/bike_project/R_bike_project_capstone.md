@@ -317,7 +317,7 @@ bike_data <- all_data %>%
 Look at that! Beautiful. Now that our data is cleaned we can actually do
 some analysis.
 
-## Analysing the Data
+## Analyzing the Data
 
 #### First we’ll start by finding the average, midpoint, maximum, and minimums for our ride times.
 
