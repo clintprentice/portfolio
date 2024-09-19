@@ -330,9 +330,6 @@ month_count = bike_data %>%
   arrange(match(months,month.name))
 ```
 
-    ## `summarise()` has grouped output by 'months'. You can override using the
-    ## `.groups` argument.
-
 ``` r
 write.csv(month_count, "month_count.csv", row.names = FALSE)
 ```
@@ -345,8 +342,6 @@ weekday_count = bike_data %>%
   summarize(row_count = n())
 ```
 
-    ## `summarise()` has grouped output by 'weekday'. You can override using the
-    ## `.groups` argument.
 
 ``` r
 write.csv(weekday_count, "output_data/weekday_count.csv", row.names=FALSE)
@@ -361,8 +356,6 @@ top_start_station <- bike_data %>%
   arrange(desc(row_count))
 ```
 
-    ## `summarise()` has grouped output by 'start_station_name'. You can override
-    ## using the `.groups` argument.
 
 ``` r
 write.csv(top_start_station, "output_data/top_start_station.csv", row.names = FALSE)
@@ -377,8 +370,6 @@ top_end_station <- bike_data %>%
   arrange(desc(row_count))
 ```
 
-    ## `summarise()` has grouped output by 'end_station_name'. You can override using
-    ## the `.groups` argument.
 
 ``` r
 write.csv(top_end_station, "output_data/top_end_station.csv", row.names = FALSE)
@@ -404,8 +395,6 @@ ridership_weekday <- bike_data %>%
   arrange(member_casual, weekday)
 ```
 
-    ## `summarise()` has grouped output by 'member_casual'. You can override using the
-    ## `.groups` argument.
 
 ``` r
 write.csv(ridership_weekday, "output_data/ridership_weekday.csv", row.names = FALSE)
@@ -425,9 +414,6 @@ bike_data %>%
   scale_y_continuous(labels = comma)
 ```
 
-    ## `summarise()` has grouped output by 'member_casual'. You can override using the
-    ## `.groups` argument.
-
 ![](R_bike_project_capstone_files/figure-gfm/rides%20per%20weekday-1.png)<!-- -->
 
 Visualization for average duration between memberships
@@ -443,8 +429,5 @@ bike_data %>%
   geom_col(position = "dodge") +
   scale_y_continuous(labels = comma)
 ```
-
-    ## `summarise()` has grouped output by 'member_casual'. You can override using the
-    ## `.groups` argument.
 
 ![](R_bike_project_capstone_files/figure-gfm/average%20duration-1.png)<!-- -->
