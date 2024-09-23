@@ -88,19 +88,24 @@ identify trends.
 
 ## Ask
 
-Three questions will guide the future marketing program: 1. How do
-annual members and casual riders use Cyclistic bikes differently? 2. Why
-would casual riders buy Cyclistic annual memberships? 3. How can
-Cyclistic use digital media to influence casual riders to become
-members?
+Three questions will guide the future marketing program:
+
+1.  How do annual members and casual riders use Cyclistic bikes
+    differently?
+2.  Why would casual riders buy Cyclistic annual memberships?
+3.  How can Cyclistic use digital media to influence casual riders to
+    become members?
 
 Moreno has assigned you the first question to answer: **How do annual
 members and casual riders use Cyclistic bikes differently?** You will
-produce a report with the following deliverables: 1. A clear statement
-of the business task 2. A description of all data sources used 3.
-Documentation of any cleaning or manipulation of data 4. A summary of
-your analysis 5. Supporting visualizations and key findings 6. Your top
-three recommendations based on your analysis
+produce a report with the following deliverables:
+
+1.  A clear statement of the business task
+2.  A description of all data sources used
+3.  Documentation of any cleaning or manipulation of data
+4.  A summary of your analysis
+5.  Supporting visualizations and key findings
+6.  Your top three recommendations based on your analysis
 
 # Preparing Data
 
@@ -114,10 +119,21 @@ to reference the original data again for any reason.
 The data for all twelve months is stored in .csv files.
 
 They all include the same 13 columns, which is great because this will
-help us smooth out our cleaning stage. Those columns are: 1. ride_id 2.
-rideable_type 3. started_at 4. ended_at 5. start_station_name 6.
-start_station_id 7. end_station_name 8. end_station_id 9. start_lat 10.
-start_lng 11. end_lat 12. end_lng 13. member_casual
+help us smooth out our cleaning stage. Those columns are:
+
+1.  ride_id
+2.  rideable_type
+3.  started_at
+4.  ended_at
+5.  start_station_name
+6.  start_station_id
+7.  end_station_name
+8.  end_station_id
+9.  start_lat
+10. start_lng
+11. end_lat
+12. end_lng
+13. member_casual
 
 The total number of rows is over 5 million! Yikes! Definitely going to
 need to use R to compile and analyze these honkers.
@@ -330,9 +346,28 @@ month_count = bike_data %>%
   arrange(match(months,month.name))
 ```
 
+    ## `summarise()` has grouped output by 'months'. You can override using the
+    ## `.groups` argument.
+
 ``` r
-write.csv(month_count, "month_count.csv", row.names = FALSE)
+print(month_count)
 ```
+
+    ## # A tibble: 24 × 3
+    ## # Groups:   months [12]
+    ##    months   member_casual row_count
+    ##    <chr>    <chr>             <int>
+    ##  1 January  casual            17364
+    ##  2 January  member            93511
+    ##  3 February casual            37599
+    ##  4 February member           144427
+    ##  5 March    casual            61775
+    ##  6 March    member           164660
+    ##  7 April    casual            92205
+    ##  8 April    member           200268
+    ##  9 May      casual           164294
+    ## 10 May      member           269961
+    ## # ℹ 14 more rows
 
 Weekday Count
 
@@ -342,52 +377,115 @@ weekday_count = bike_data %>%
   summarize(row_count = n())
 ```
 
+    ## `summarise()` has grouped output by 'weekday'. You can override using the
+    ## `.groups` argument.
 
 ``` r
-write.csv(weekday_count, "output_data/weekday_count.csv", row.names=FALSE)
+print(weekday_count)
 ```
+
+    ## # A tibble: 14 × 3
+    ## # Groups:   weekday [7]
+    ##    weekday   member_casual row_count
+    ##    <chr>     <chr>             <int>
+    ##  1 Friday    casual           216866
+    ##  2 Friday    member           380331
+    ##  3 Monday    casual           166280
+    ##  4 Monday    member           381681
+    ##  5 Saturday  casual           315790
+    ##  6 Saturday  member           341552
+    ##  7 Sunday    casual           253410
+    ##  8 Sunday    member           294729
+    ##  9 Thursday  casual           177175
+    ## 10 Thursday  member           420648
+    ## 11 Tuesday   casual           158295
+    ## 12 Tuesday   member           416674
+    ## 13 Wednesday casual           180052
+    ## 14 Wednesday member           441452
 
 Top Start Station
 
 ``` r
-top_start_station <- bike_data %>% 
+top_start_station = bike_data %>% 
   group_by(start_station_name, member_casual) %>% 
   summarize(row_count = n()) %>% 
   arrange(desc(row_count))
 ```
 
+    ## `summarise()` has grouped output by 'start_station_name'. You can override
+    ## using the `.groups` argument.
 
 ``` r
-write.csv(top_start_station, "output_data/top_start_station.csv", row.names = FALSE)
+print(top_start_station)
 ```
+
+    ## # A tibble: 3,096 × 3
+    ## # Groups:   start_station_name [1,669]
+    ##    start_station_name                 member_casual row_count
+    ##    <chr>                              <chr>             <int>
+    ##  1 Streeter Dr & Grand Ave            casual            45559
+    ##  2 DuSable Lake Shore Dr & Monroe St  casual            30099
+    ##  3 Kingsbury St & Kinzie St           member            25008
+    ##  4 Clinton St & Washington Blvd       member            24810
+    ##  5 Michigan Ave & Oak St              casual            22511
+    ##  6 Clark St & Elm St                  member            21848
+    ##  7 Clinton St & Madison St            member            21229
+    ##  8 DuSable Lake Shore Dr & North Blvd casual            20487
+    ##  9 Shedd Aquarium                     casual            19025
+    ## 10 Millennium Park                    casual            18975
+    ## # ℹ 3,086 more rows
 
 Top End Station
 
 ``` r
-top_end_station <- bike_data %>% 
+top_end_station = bike_data %>% 
   group_by(end_station_name, member_casual) %>% 
   summarize(row_count = n()) %>% 
   arrange(desc(row_count))
 ```
 
+    ## `summarise()` has grouped output by 'end_station_name'. You can override using
+    ## the `.groups` argument.
 
 ``` r
-write.csv(top_end_station, "output_data/top_end_station.csv", row.names = FALSE)
+print(top_end_station)
 ```
+
+    ## # A tibble: 3,118 × 3
+    ## # Groups:   end_station_name [1,678]
+    ##    end_station_name                   member_casual row_count
+    ##    <chr>                              <chr>             <int>
+    ##  1 Streeter Dr & Grand Ave            casual            49658
+    ##  2 DuSable Lake Shore Dr & Monroe St  casual            27801
+    ##  3 Clinton St & Washington Blvd       member            25450
+    ##  4 Kingsbury St & Kinzie St           member            24958
+    ##  5 DuSable Lake Shore Dr & North Blvd casual            23831
+    ##  6 Michigan Ave & Oak St              casual            23364
+    ##  7 Clinton St & Madison St            member            22322
+    ##  8 Clark St & Elm St                  member            21922
+    ##  9 Millennium Park                    casual            21124
+    ## 10 Wells St & Concord Ln              member            18154
+    ## # ℹ 3,108 more rows
 
 Average Ride Length
 
 ``` r
-ride_length <- bike_data %>% 
+ride_length = bike_data %>% 
   group_by(member_casual) %>% 
   summarize(mean(ride_length))
-write.csv(ride_length, "output_data/ride_length.csv", row.names = FALSE)
+print(ride_length)
 ```
+
+    ## # A tibble: 2 × 2
+    ##   member_casual `mean(ride_length)`
+    ##   <chr>                       <dbl>
+    ## 1 casual                      1459.
+    ## 2 member                       757.
 
 Rides per Weekday by membership
 
 ``` r
-ridership_weekday <- bike_data %>% 
+ridership_weekday = bike_data %>% 
   mutate(weekday = wday(started_at, label = TRUE)) %>% 
   group_by(member_casual, weekday) %>% 
   summarise(number_of_rides = n(),
@@ -395,10 +493,31 @@ ridership_weekday <- bike_data %>%
   arrange(member_casual, weekday)
 ```
 
+    ## `summarise()` has grouped output by 'member_casual'. You can override using the
+    ## `.groups` argument.
 
 ``` r
-write.csv(ridership_weekday, "output_data/ridership_weekday.csv", row.names = FALSE)
+print(ridership_weekday)
 ```
+
+    ## # A tibble: 14 × 4
+    ## # Groups:   member_casual [2]
+    ##    member_casual weekday number_of_rides average_duration
+    ##    <chr>         <ord>             <int>            <dbl>
+    ##  1 casual        Sun              253410            1675.
+    ##  2 casual        Mon              166280            1408.
+    ##  3 casual        Tue              158295            1256.
+    ##  4 casual        Wed              180052            1304.
+    ##  5 casual        Thu              177175            1265.
+    ##  6 casual        Fri              216866            1410.
+    ##  7 casual        Sat              315790            1647.
+    ##  8 member        Sun              294729             851.
+    ##  9 member        Mon              381681             719.
+    ## 10 member        Tue              416674             722.
+    ## 11 member        Wed              441452             737.
+    ## 12 member        Thu              420648             719.
+    ## 13 member        Fri              380331             739.
+    ## 14 member        Sat              341552             852.
 
 Visualizing Data for number of rides per weekday
 
@@ -413,6 +532,9 @@ bike_data %>%
   geom_col(position = "dodge") +
   scale_y_continuous(labels = comma)
 ```
+
+    ## `summarise()` has grouped output by 'member_casual'. You can override using the
+    ## `.groups` argument.
 
 ![](R_bike_project_capstone_files/figure-gfm/rides%20per%20weekday-1.png)<!-- -->
 
@@ -430,4 +552,31 @@ bike_data %>%
   scale_y_continuous(labels = comma)
 ```
 
+    ## `summarise()` has grouped output by 'member_casual'. You can override using the
+    ## `.groups` argument.
+
 ![](R_bike_project_capstone_files/figure-gfm/average%20duration-1.png)<!-- -->
+
+# Answering the initial question:
+
+## How do annual members and casual riders use Cyclistic bikes differently?
+
+Judging from the data we can see that casual riders take longer bike
+rides than members. Casual riders also take more rides on the weekends
+rather than the weekdays.
+
+### What can we determine from this?
+
+Casual riders are taking more leisurely rides while annual members are
+more likely to use Cyclistic bikes for commuting or short trips.
+
+### How could the team and business apply these insights?
+
+1.  If we’re trying to convert casual riders to annual members, we can
+    target focus ads on the weekends to catch more casual riders.
+2.  We can also use the casual riders top_start_station and
+    top_end_station as a means to reach that audience more directly.
+3.  Figuring out the cost/benefit analysis of casual riders to annual
+    members and use that as an additional data point in favor of
+    converting to an annual membership. i.e. “Casual riders that upgrade
+    to an annual membership save xx% each year.”
