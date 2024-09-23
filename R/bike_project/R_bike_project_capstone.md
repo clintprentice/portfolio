@@ -345,10 +345,6 @@ month_count = bike_data %>%
   summarize(row_count = n()) %>% 
   arrange(match(months,month.name))
 ```
-
-    ## `summarise()` has grouped output by 'months'. You can override using the
-    ## `.groups` argument.
-
 ``` r
 print(month_count)
 ```
@@ -376,10 +372,6 @@ weekday_count = bike_data %>%
   group_by(weekday = weekday, member_casual = member_casual) %>% 
   summarize(row_count = n())
 ```
-
-    ## `summarise()` has grouped output by 'weekday'. You can override using the
-    ## `.groups` argument.
-
 ``` r
 print(weekday_count)
 ```
@@ -411,10 +403,6 @@ top_start_station = bike_data %>%
   summarize(row_count = n()) %>% 
   arrange(desc(row_count))
 ```
-
-    ## `summarise()` has grouped output by 'start_station_name'. You can override
-    ## using the `.groups` argument.
-
 ``` r
 print(top_start_station)
 ```
@@ -443,10 +431,6 @@ top_end_station = bike_data %>%
   summarize(row_count = n()) %>% 
   arrange(desc(row_count))
 ```
-
-    ## `summarise()` has grouped output by 'end_station_name'. You can override using
-    ## the `.groups` argument.
-
 ``` r
 print(top_end_station)
 ```
@@ -492,10 +476,6 @@ ridership_weekday = bike_data %>%
             average_duration = mean(ride_length)) %>% 
   arrange(member_casual, weekday)
 ```
-
-    ## `summarise()` has grouped output by 'member_casual'. You can override using the
-    ## `.groups` argument.
-
 ``` r
 print(ridership_weekday)
 ```
