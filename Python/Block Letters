@@ -1,0 +1,11 @@
+#Learning Python. Create ASCII art of my initials
+#Name: Clint Prentice
+#Fun Fact: I have a big movie collection
+
+print("   CCC    PPPP ")
+print(" C     C  P    P")
+print(" C        P    P")
+print(" C        PPPP  ")
+print(" C        P     ")
+print(" C     C  P     ")
+print("   CCC    P     ")
