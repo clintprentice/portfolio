@@ -54,7 +54,7 @@ responses = [
     "bad vibes", 
     "it won't happen before GTA6 comes out", 
     "absolutely not"
-]
+    ]
 
 playerName = input("Enter Name: ")
 
