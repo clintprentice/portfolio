@@ -1,0 +1,98 @@
+# Multiple Tables with Reddit from Codecademy
+# For this project, you’ll be working as a Data Analyst who will be examining some fictional data from Reddit, a social news aggregation, content rating site.
+
+#On Reddit, users can create posts with content such as text, media, and links to other websites. Users can post content to different communities known as subreddits, which focus on a particular topic. Users can then rate others’ content by upvoting or downvoting them, and each post will show its total cumulative score.
+
+#The users table has:
+#  - id
+#  - username
+#  - email
+#  - join_date
+#  - score
+
+#The posts table has:
+#  - id
+#  - title
+#  - user_id
+#  - subreddit_id
+#  - score
+#  - created_date
+
+#The subreddits table has:
+#  - id
+#  - name
+#  - created_date
+#  - subscriber_count
+
+# What user has the highest score?
+SELECT 
+  COUNT(*) AS 'subreddit_count'
+FROM subreddits;
+
+# What post has the highest score?
+SELECT 
+  username,
+  MAX(score) AS 'highest_score'
+FROM users;
+
+# What are the top 5 subreddits with the highest subscriber count?
+SELECT
+  title,
+  MAX(score) AS 'highest_score'
+FROM posts;
+
+SELECT name
+FROM subreddits
+ORDER BY subscriber_count DESC
+LIMIT 5;
+
+# Find out how many posts each user has made
+SELECT users.username, 
+  COUNT(posts.id) AS 'posts_made'
+FROM users
+LEFT JOIN posts
+  ON users.id = posts.user_id
+GROUP BY users.id
+ORDER BY 2 DESC;
+
+# Only show existing posts where users are still active
+SELECT *
+FROM posts
+INNER JOIN users
+  ON posts.user_id = users.id;
+
+# Find out which subreddits have the most popular posts
+# Assume popularity is a score of 5000 or more
+WITH popular_posts AS (
+  SELECT * 
+  FROM posts
+  WHERE score >= 5000
+)
+SELECT subreddits.name,
+  popular_posts.title,
+  popular_posts.score
+FROM subreddits
+INNER JOIN popular_posts
+  ON subreddits.id = popular_posts.subreddit_id
+ORDER BY popular_posts.score DESC;
+
+# Highest scoring post for each subreddit
+SELECT 
+  posts.id,
+  posts.title,
+  subreddits.name AS 'subreddit_name',
+  MAX(posts.score) AS 'highest_score'
+FROM posts
+INNER JOIN subreddits
+  ON posts.subreddit_id = subreddits.id
+GROUP BY subreddits.id;
+
+# Average score of all posts for each subreddit
+SELECT 
+  subreddits.name, 
+  ROUND(AVG(posts.score),2) AS 'average_score'
+FROM subreddits
+INNER JOIN posts
+ON subreddits.id = posts.subreddit_id
+GROUP BY subreddits.name
+ORDER BY 2 DESC;
