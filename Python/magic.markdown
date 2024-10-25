@@ -1,5 +1,7 @@
 # Magic 8-Ball
 
+### My first stab at the Magic 8-Ball was big long code.
+```
 import random
 playerName = input("Enter Name: ")
 
@@ -37,9 +39,10 @@ while keep_playing:
     if ask not in ['yes', 'y']:
         keep_playing = False
 print("See you on the flip side, bro!")
+```
 
-
-# I wanted to try writing this with more concise code. So I put the responses in a list and had the randomizer just pick a random response.
+#### I wanted to try writing this with more concise code. So I put the responses in a list and had the randomizer just pick a random response.
+```
 import random
 
 responses = [
@@ -65,3 +68,4 @@ while keep_playing:
     keep_playing = ask in ['yes', 'y']
 
 print("See you on the flip side, bro!")
+```
