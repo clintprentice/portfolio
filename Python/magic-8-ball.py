@@ -68,3 +68,43 @@ while keep_playing:
 
 print("See you on the flip side, bro!")
 
+# I then wanted to make sure they could ask the same question or a different question because you know how you be shaking the 8 ball until you get the response you want.
+import random
+
+responses = [
+    "Yeah dude! Skibbity!", 
+    "def bro", 
+    "Most assuredly, my guy", 
+    "idk man i'm kinda lost in the sauce here", 
+    "ask me when im not busy shreddin' the rails", 
+    "nah, you shouldn't hear this right now", 
+    "bad vibes", 
+    "it won't happen before GTA6 comes out", 
+    "absolutely not"
+]
+
+playerName = input("Enter Name: ")
+
+keep_playing = True
+last_question = None
+
+while keep_playing:
+    if last_question:
+        # Ask if they want to ask the same question or a new one
+        same_question = input("Do you want to ask the same question? Enter yes/y or no/n: \n").lower()
+        if same_question in ['yes', 'y']:
+            playerQuestion = last_question
+        else:
+            playerQuestion = input("What do you want to know? \n")
+            last_question = playerQuestion
+    else:
+        playerQuestion = input("What do you want to know? \n")
+        last_question = playerQuestion
+    
+    print("Magic 8-Ball's Answer:", random.choice(responses))
+    
+    # Ask if they want to ask another question (same or new)
+    ask = input("Wanna ask me again? Enter yes/y or no/n: \n").lower()
+    keep_playing = ask in ['yes', 'y']
+
+print("Thanks for playing!")
