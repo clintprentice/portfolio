@@ -24,23 +24,24 @@
 #  - created_date
 #  - subscriber_count
 
-# What user has the highest score?
+# How many subreddits are there?
 SELECT 
   COUNT(*) AS 'subreddit_count'
 FROM subreddits;
 
-# What post has the highest score?
+# What user has the highest score?
 SELECT 
   username,
   MAX(score) AS 'highest_score'
 FROM users;
 
-# What are the top 5 subreddits with the highest subscriber count?
+# What post has the highest score?
 SELECT
   title,
   MAX(score) AS 'highest_score'
 FROM posts;
 
+# What are the top 5 subreddits with the highest subscriber count?
 SELECT name
 FROM subreddits
 ORDER BY subscriber_count DESC
