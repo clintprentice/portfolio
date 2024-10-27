@@ -107,4 +107,4 @@ while keep_playing:
     ask = input("Wanna ask me again? Enter yes/y or no/n: \n").lower()
     keep_playing = ask in ['yes', 'y']
 
-print("Thanks for playing!")
+print("See you on the flip side, bro!")
