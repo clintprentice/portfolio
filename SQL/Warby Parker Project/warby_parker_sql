@@ -1,0 +1,250 @@
+SELECT 
+    number_of_pairs, 
+    COUNT(*) AS total_users
+FROM home_try_on
+WHERE number_of_pairs IN ('3', '5')
+GROUP BY number_of_pairs;
+ 
+ -- Quiz Funnel
+ SELECT *
+ FROM survey
+ LIMIT 10;
+
+-- What is the number of reponses for each question?
+SELECT 
+  question,
+  COUNT(DISTINCT user_id)
+FROM survey
+GROUP BY question;
+
+-- Question 1: 100%
+-- Question 2: 95%
+-- Question 3: 80%
+-- Question 4: 95%
+-- Question 5: 75%
+-- Which questions have a lower completion rate? Question 3 and Question 5, mostly Question 5
+-- What do you think is the reason? Maybe people don't like the shapes on offer
+-- And they don't want to give out their information on when they last had an eye exam
+
+SELECT * FROM quiz LIMIT 5;
+SELECT * FROM home_try_on LIMIT 5;
+SELECT * FROM purchase LIMIT 5;
+
+SELECT
+  q.user_id,
+  CASE
+    WHEN h.user_id IS NOT NULL THEN 'True' 
+    ELSE 'False' 
+  END AS 'is_home_try_on',
+  h.number_of_pairs,
+  CASE
+    WHEN p.user_id IS NOT NULL THEN 'True'
+    ELSE 'False'
+  END AS 'is_purchase'
+FROM quiz q
+LEFT JOIN home_try_on h
+  ON q.user_id = h.user_id
+LEFT JOIN purchase p
+  ON h.user_id = p.user_id
+LIMIT 10;
+
+-- Total number of users who completed the quiz
+WITH quiz_completed AS (
+    SELECT COUNT(DISTINCT user_id) AS total_quiz_users
+    FROM quiz
+),
+-- Total number of users who proceeded to the Home Try-On stage
+home_try_on_users AS (
+    SELECT COUNT(DISTINCT user_id) AS total_home_try_on_users
+    FROM home_try_on
+),
+-- Total number of users who made a purchase
+purchase_users AS (
+    SELECT COUNT(DISTINCT user_id) AS total_purchase_users
+    FROM purchase
+)
+-- Calculate conversion rates across the funnel
+SELECT 
+    qc.total_quiz_users AS total_quiz_users,
+    htu.total_home_try_on_users AS total_home_try_on_users,
+    pu.total_purchase_users AS total_purchase_users,
+    -- Conversion rate from Quiz to Home Try-On
+    ROUND((htu.total_home_try_on_users * 1.0 / qc.total_quiz_users) * 100, 2) AS quiz_to_home_try_on_conversion_rate,
+    -- Conversion rate from Home Try-On to Purchase
+    ROUND((pu.total_purchase_users * 1.0 / htu.total_home_try_on_users) * 100, 2) AS home_try_on_to_purchase_conversion_rate,
+    -- Conversion rate from Quiz to Purchase (overall funnel conversion rate)
+    ROUND((pu.total_purchase_users * 1.0 / qc.total_quiz_users) * 100, 2) AS quiz_to_purchase_conversion_rate
+FROM quiz_completed qc
+JOIN home_try_on_users htu ON 1=1
+JOIN purchase_users pu ON 1=1;
+
+-- Step 1: Select and check users who participated in the Home Try-On stage and the number of pairs they received
+WITH home_try_on_data AS (
+    SELECT 
+        user_id,
+        number_of_pairs
+    FROM home_try_on
+    WHERE number_of_pairs IN ('3 pairs', '5 pairs')
+  ),
+  -- Step 2: Check if these users made a purchase by joining with the purchase table
+  purchase_data AS (
+      SELECT 
+          h.user_id, 
+          h.number_of_pairs,
+          CASE 
+              WHEN p.user_id IS NOT NULL THEN 1
+              ELSE 0 
+          END AS made_purchase
+      FROM home_try_on_data h
+      LEFT JOIN purchase p 
+          ON h.user_id = p.user_id
+  )
+-- Step 3: Calculate the total number of users and purchase rate for each group (3 pairs vs. 5 pairs)
+SELECT 
+    number_of_pairs, 
+    COUNT(*) AS total_users,
+    SUM(made_purchase) AS total_purchases,
+    ROUND(SUM(made_purchase) * 1.0 / COUNT(*) * 100, 2) AS purchase_rate
+FROM purchase_data
+GROUP BY number_of_pairs;
+
+-- 1. Most common style from the quiz table
+SELECT 
+    'style' AS attribute, 
+    style AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+GROUP BY style
+ORDER BY total_responses DESC
+LIMIT 1;
+
+-- 2. Most common fit from the quiz table
+SELECT 
+    'fit' AS attribute, 
+    fit AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+GROUP BY fit
+ORDER BY total_responses DESC
+LIMIT 1;
+
+-- 3. Most common shape from the quiz table
+SELECT 
+    'shape' AS attribute, 
+    shape AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+GROUP BY shape
+ORDER BY total_responses DESC
+LIMIT 1;
+
+-- 4. Most common color from the quiz table
+SELECT 
+    'color' AS attribute, 
+    color AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+GROUP BY color
+ORDER BY total_responses DESC
+LIMIT 1;
+
+-- Combine results using dummy tables for each attribute
+SELECT t1.attribute, t1.value, t1.total_responses FROM
+(
+    -- 1. Most common style
+    SELECT 
+        'style' AS attribute, 
+        style AS value, 
+        COUNT(*) AS total_responses
+    FROM quiz
+    GROUP BY style
+    ORDER BY total_responses DESC
+    LIMIT 2
+) AS t1
+
+UNION ALL
+
+SELECT t2.attribute, t2.value, t2.total_responses FROM
+(
+    -- 2. Most common fit
+    SELECT 
+        'fit' AS attribute, 
+        fit AS value, 
+        COUNT(*) AS total_responses
+    FROM quiz
+    GROUP BY fit
+    ORDER BY total_responses DESC
+    LIMIT 3
+) AS t2
+
+UNION ALL
+
+SELECT t3.attribute, t3.value, t3.total_responses FROM
+(
+    -- 3. Most common shape
+    SELECT 
+        'shape' AS attribute, 
+        shape AS value, 
+        COUNT(*) AS total_responses
+    FROM quiz
+    GROUP BY shape
+    ORDER BY total_responses DESC
+    LIMIT 3
+) AS t3
+
+UNION ALL
+
+SELECT t4.attribute, t4.value, t4.total_responses FROM
+(
+    -- 4. Most common color
+    SELECT 
+        'color' AS attribute, 
+        color AS value, 
+        COUNT(*) AS total_responses
+    FROM quiz
+    GROUP BY color
+    ORDER BY total_responses DESC
+    LIMIT 3
+) AS t4;
+
+-- 1. Least popular style from the quiz table
+SELECT 
+    'style' AS attribute, 
+    style AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+WHERE style != "I'm not sure. Let's skip it."
+GROUP BY style
+ORDER BY total_responses ASC
+LIMIT 1;
+
+-- 2. Least popular fit from the quiz table
+SELECT 
+    'fit' AS attribute, 
+    fit AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+WHERE fit != "I'm not sure. Let's skip it."
+GROUP BY fit
+ORDER BY total_responses ASC
+LIMIT 1;
+
+-- 3. Least popular shape from the quiz table
+SELECT 
+    'shape' AS attribute, 
+    shape AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+WHERE shape != "No Preference"
+GROUP BY shape
+ORDER BY total_responses ASC
+LIMIT 1;
+-- 4. Least popular color from the quiz table
+SELECT 
+    'color' AS attribute, 
+    color AS value, 
+    COUNT(*) AS total_responses
+FROM quiz
+GROUP BY color
+ORDER BY total_responses ASC
+LIMIT 1;
