@@ -8,5 +8,5 @@ This is broken down by projects in different languages.
 ### Languages included:
   * [SQL](https://github.com/clintprentice/portfolio/tree/main/SQL)
   * [Tableau](https://github.com/clintprentice/portfolio/tree/main/Tableau)
-  * [R](https://github.com/clintprentice/portfolio/tree/main/R) (coming soon)
+  * [R](https://github.com/clintprentice/portfolio/tree/main/R)
   * Python (eventually)
