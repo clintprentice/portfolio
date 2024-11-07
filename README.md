@@ -9,4 +9,4 @@ This is broken down by projects in different languages.
   * [SQL](https://github.com/clintprentice/portfolio/tree/main/SQL)
   * [Tableau](https://github.com/clintprentice/portfolio/tree/main/Tableau)
   * [R](https://github.com/clintprentice/portfolio/tree/main/R)
-  * Python (eventually)
+  * [Python](https://github.com/clintprentice/portfolio/tree/main/Python)
